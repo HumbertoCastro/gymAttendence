@@ -8,9 +8,6 @@ import {
   getDocs,
   collection,
   where,
-  addDoc,
-  updateDoc,
-  doc,
   setDoc,
 } from "firebase/firestore";
 import { GymAttendanceData } from './Jsons/Frequency';

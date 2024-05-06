@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { GymAttendanceData } from '../Jsons/Frequency';
@@ -8,10 +7,10 @@ export default function GeneralInfo() {
     const [data, setData] = useState<GymAttendanceData[]>([]);
     const widthScream = window.innerWidth
     const heighScream = window.innerHeight
-    const [chartData, setChartData] = useState({ labels: [], values: [] });
+    const [chartData, setChartData] = useState<any>({ labels: [], values: [] });
 
     const getjsons = async () => {
-        const jsonData = await getAllJsons();
+        const jsonData: any = await getAllJsons();
         if (jsonData) setData(jsonData as GymAttendanceData[]);
     }
 

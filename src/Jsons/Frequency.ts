@@ -4,10 +4,6 @@ export interface DateAttendance {
     attended: string[];
   }
   
-  interface Week {
-    [week: string]: DateAttendance;
-  }
-  
   export interface Month {
     monthName: string;
     weaks: { [week: string]: DateAttendance };
@@ -27,11 +23,6 @@ export interface DateAttendance {
       };
     };
     frequency: { [year: string]: Month[] };
-  }
-  
-  // Define the interfaces for any additional utility functions
-  interface SortWeeks {
-    [key: string]: DateAttendance;
   }
   
   

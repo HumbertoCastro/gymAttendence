@@ -29,7 +29,7 @@ export default function SideDrawer({ toggleDrawer, isOpen, setName }: { toggleDr
                 </ListSubheader>
             }
         >
-            {names.map((text: string, index) => (
+            {names.map((text: string) => (
                 <ListItem button key={text} onClick={() => setName(text)} sx={{ marginLeft: '40px'}}>
                     <ListItemText primary={text} />
                 </ListItem>

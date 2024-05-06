@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { GymAttendanceData } from '../Jsons/Frequency';
@@ -18,7 +17,7 @@ export default function AttendanceChart({ data }: Props) {
         const values: number[] = [];
 
         yearData.forEach(month => {
-        Object.entries(sortWeeks(month.weaks)).forEach(([week, attendanceData], index) => {
+        Object.entries(sortWeeks(month.weaks)).forEach(([_week, attendanceData]) => {
             values.push(attendanceData.attended.length);
         });
         });
@@ -29,7 +28,7 @@ export default function AttendanceChart({ data }: Props) {
     const { values } = processData();
 
     useEffect(() => {
-        const element = document.querySelector(".table-cont-container")
+        const element: any = document.querySelector(".table-cont-container")
         if (element) {
             setSizes({
                 witdh: element.offsetWidth,
@@ -50,7 +49,7 @@ export default function AttendanceChart({ data }: Props) {
       className='barchart'
       xAxis={[{
         id: 'barCategories',
-        data: values.map((x, index) => `${index + 1}`),
+        data: values.map((_x, index) => `${index + 1}`),
         scaleType: 'band',
       }]}
       yAxis={[{

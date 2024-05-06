@@ -10,15 +10,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
-import Collapse from '@mui/material/Collapse';
 
 import { getJson, updateJson } from "../firebase-config";
 import { DateAttendance, GymAttendanceData, Month } from "../Jsons/Frequency";
 import './Main.css'
-import json from '../Jsons/Humberto.json'
 import { sortWeeks } from "../utils/sortWeaks";
-import { IconButton } from "@mui/material";
-import { ExpandMoreOutlined, Title } from "@mui/icons-material";
 import AttendanceChart from "../components/Graficos";
 
 // Styled components
@@ -50,7 +46,7 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser }) => {
 
   useEffect(() => {
     const getJsonData = async () => {
-      const data = await getJson(currentUser);
+      const data: any = await getJson(currentUser);
       setData(data[0] as GymAttendanceData);
     };
     getJsonData();
@@ -82,7 +78,7 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser }) => {
     return Object.entries(sortWeeks(monthData.weaks)).map(([weekKey, weekData]: [string, DateAttendance]) => {
         return (<StyledTableRow 
             key={weekKey} 
-            className={weekData.attended.length >= jsonData?.participant.attendanceDaysPerWeek ? 'complete-week' : ''}
+            className={jsonData && weekData.attended.length >= jsonData?.participant.attendanceDaysPerWeek ? 'complete-week' : ''}
           >
             {weekData.dates.map((date: string) => (
               <StyledTableCell key={date} align="center">

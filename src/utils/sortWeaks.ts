@@ -11,7 +11,7 @@ export function sortWeeks(data: any): SortedWeeks {
         const weekNumberB = parseInt(b.split(' ')[1], 10);
         return weekNumberA - weekNumberB;
     });
-    const sortedData = {};
+    const sortedData: any = {};
     sortedKeys.forEach(key => {
         sortedData[key] = data[key];
     });
