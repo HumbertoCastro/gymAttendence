@@ -11,13 +11,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 
-import { addCompensatedDaysToAllJsons, getJson, updateJson } from "../firebase-config";
+import { getJson, updateJson } from "../firebase-config";
 import { DateAttendance, GymAttendanceData, Month } from "../Jsons/Frequency";
 import './Main.css'
 import { sortWeeks } from "../utils/sortWeaks";
 import AttendanceChart from "../components/Graficos";
-import jsonmock from '../Jsons/Humberto.json'
-import { Box } from "@mui/material";
 import InfoBox from "../components/InfoBox";
 
 // Styled components

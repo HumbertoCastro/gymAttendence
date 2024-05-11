@@ -9,17 +9,6 @@ interface Props {
 
 
 export default function AttendanceChart({ data }: Props) {
-    const colorMap = {
-      type: 'piecewise', // Define a piecewise color map
-      ranges: [{
-        upTo: data.participant.attendanceDaysPerWeek, // Threshold
-        color: 'red', // Color for values below the threshold
-      }, {
-        from: data.participant.attendanceDaysPerWeek,
-        color: 'green', // Color for values above the threshold
-      }]
-    };
-  
     const [sizes, setSizes] = useState({
         witdh: 0,
         heigth: 0,
@@ -54,7 +43,7 @@ export default function AttendanceChart({ data }: Props) {
       // Wait for the chart to render
       setTimeout(() => {
           const bars = document.querySelectorAll('.MuiBarElement-series-yAxis1');
-          bars.forEach((bar, index) => {
+          bars.forEach((bar: any, index) => {
               const value = values[index];
               if (value < data.participant.attendanceDaysPerWeek) {
                   bar.style.fill = 'red'; // Change color to red if value is less than threshold

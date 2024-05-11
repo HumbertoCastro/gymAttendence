@@ -1,4 +1,4 @@
-import React, { useContext, useState, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { logInWithEmailAndPassword } from "../../firebase-config";
 import "./Login.css";
 

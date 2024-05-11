@@ -6,8 +6,8 @@ import GeneralInfo from './pages/Generalnfo';
 import Login from './pages/Login/Login';
 
 function App() {
-  const [email, setEmail] = useState('dedebarbos@hotmail.com');
-  const [logged, setLogged] = useState('dedebarbos@hotmail.com');
+  const [email, setEmail] = useState('unlogged');
+  const [logged, setLogged] = useState('');
 
   return (
     <>
