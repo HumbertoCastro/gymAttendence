@@ -14,6 +14,25 @@
 .table-cont-container {
     margin: 20px auto;
     min-width: 90vw;
+    max-width: 90vw;
+}
+
+.frequency-graph-div {
+    align-self: flex-start;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 20px auto;
+    min-width: 90vw;
+    max-width: 90vw;
+}
+
+.frequency-graph-div:first-child {
+    width: 60vw;
+}
+
+.table-row {
+    max-width: 5vw;
 }
 
 .complete-week {
@@ -21,9 +40,17 @@
     display: none;
 }
 
+.extra-days {
+    font-size: 4rem;
+    color: rgb(104, 255, 84);
+    margin: 0;
+    align-self: center;
+    text-align: center;
+}
+
 .participant-goal {
     width: 95vw;
-    background-color: rgba(224, 224, 224, 1) !important;
+    background-color: white !important;
     display: flex;
     flex-direction: row;
     border-radius: 10px;

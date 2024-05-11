@@ -3,17 +3,20 @@ import MainPage from './pages/Main'
 import DenseAppBar from './components/AppBar'
 import { useState } from 'react'
 import GeneralInfo from './pages/Generalnfo';
+import Login from './pages/Login/Login';
 
 function App() {
-  const [name, setName] = useState('Geral');
-  console.log(name)
+  const [email, setEmail] = useState('dedebarbos@hotmail.com');
+  const [logged, setLogged] = useState('dedebarbos@hotmail.com');
+
   return (
     <>
-      <DenseAppBar setName={setName} name={name} />
       {
-        name !== 'Geral' ? <MainPage currentUser={name} /> : <GeneralInfo />
+        email !== 'unlogged' && <DenseAppBar setName={setEmail} email={email} />
       }
-      
+      {
+        email === 'unlogged' ? <Login callbackEmail={setEmail} setLogged={setLogged} /> : email !== 'Geral' ? <MainPage currentUser={email} logged={logged} /> : <GeneralInfo />
+      }      
     </>
   )
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { GymAttendanceData } from '../Jsons/Frequency';
 import { getAllJsons } from '../firebase-config';
+import Participant from '../components/Participant';
 
 export default function GeneralInfo() {
     const [data, setData] = useState<GymAttendanceData[]>([]);
@@ -41,13 +42,13 @@ export default function GeneralInfo() {
 
   return (
     <div className='table-cont'>
-        <h1>Frequencia Geral</h1>
+        <h1>Frequência Geral</h1>
         <p>Semanas Acima ou igual a meta</p>
         {chartData.labels.length > 0 && (
             <BarChart
                 sx={
                 {
-                    backgroundColor: 'rgba(224, 224, 224, 1)',
+                    backgroundColor: 'white',
                     borderRadius: '6px'
                 }
                 }
@@ -70,32 +71,8 @@ export default function GeneralInfo() {
             />
         )}
         <div className="participant-goals">
-            <h2>Participant Goals</h2>
-            {data.map(participant => (
-                <div key={participant.name} className="participant-goal">
-                    <h3 className='name'>{participant.name}: </h3>
-                    <div className='info-div'>
-                        <p>Peso Inicial ( kg ) </p>
-                        <h1 className='info'>{participant.participant.weight.current}</h1>
-                    </div>
-                    <div className='info-div'>
-                        <p>Peso Desejado ( kg ) </p>
-                        <h1 className='info-red'>{participant.participant.weight.desired}</h1>
-                    </div>
-                    <div className='info-div'>
-                        <p>BF ( % ) Atual </p>
-                        <h1 className='info'>{participant.participant.weight.current}</h1>
-                    </div>
-                    <div className='info-div'>
-                        <p>BF ( % ) Desejado </p>
-                        <h1 className='info-red'>{participant.participant.weight.current}</h1>
-                    </div>
-                    <div className='info-div'>
-                        <p>Frequencia Semanal </p>
-                        <h1 className='info-red'>{participant.participant.attendanceDaysPerWeek}</h1>
-                    </div>
-                </div>
-            ))}
+            <h2>Meta de todos os Participantes</h2>
+            {data.map(participant => <Participant participant={participant} /> )}
         </div>        
     </div>
   );

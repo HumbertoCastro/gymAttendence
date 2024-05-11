@@ -11,11 +11,14 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 
-import { getJson, updateJson } from "../firebase-config";
+import { addCompensatedDaysToAllJsons, getJson, updateJson } from "../firebase-config";
 import { DateAttendance, GymAttendanceData, Month } from "../Jsons/Frequency";
 import './Main.css'
 import { sortWeeks } from "../utils/sortWeaks";
 import AttendanceChart from "../components/Graficos";
+import jsonmock from '../Jsons/Humberto.json'
+import { Box } from "@mui/material";
+import InfoBox from "../components/InfoBox";
 
 // Styled components
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -39,10 +42,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 interface MainPageProps {
   currentUser: string;
+  logged: string
 }
 
-const MainPage: React.FC<MainPageProps> = ({ currentUser }) => {
+const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
   const [jsonData, setData] = useState<GymAttendanceData>();
+  const [extraDays, setExtra] = useState<number>(0);
 
   useEffect(() => {
     const getJsonData = async () => {
@@ -71,8 +76,21 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser }) => {
       console.log('Update successful');
     } catch (error) {
       console.error('Failed to update:', error);
-    }
+    } // */
   };
+
+  useEffect(() => {
+    let count = 0;
+    jsonData?.frequency['2024'].forEach((month) => {
+      Object.values(month.weaks).forEach((weekData) => {
+        if (weekData.attended.length > jsonData.participant.attendanceDaysPerWeek) {
+          count++;
+        }
+      });
+    });
+    setExtra(count); // Update the state only once with the final count
+  }, [jsonData]);
+
   const renderTableForMonth = (monthData: Month, monthIndex: number) => {
     // Ensure 'sortWeeks' returns an object whose keys are string and values are of type DateAttendance
     return Object.entries(sortWeeks(monthData.weaks)).map(([weekKey, weekData]: [string, DateAttendance]) => {
@@ -81,9 +99,10 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser }) => {
             className={jsonData && weekData.attended.length >= jsonData?.participant.attendanceDaysPerWeek ? 'complete-week' : ''}
           >
             {weekData.dates.map((date: string) => (
-              <StyledTableCell key={date} align="center">
+              <StyledTableCell className="table-row" key={date} align="center">
                 {date.split("-")[2]}
                 <Checkbox
+                  disabled={ logged !== currentUser }
                   checked={weekData.attended.includes(date)}
                   onChange={() => handleCheck(date, weekKey, monthIndex)}
                 />
@@ -96,40 +115,49 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser }) => {
 
   return (
     <div className="table-cont">
-    Grafico de Frequencia
+    <div className="">
     {
         jsonData && <AttendanceChart data={jsonData} />
     }
+    {
+     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
+      <InfoBox mainText={jsonData?.participant.attendanceDaysPerWeek.toString() || '0' } subText="META SEMANAL" />
+      <InfoBox mainText={`${ jsonData?.participant.weight.desired}`} subText="META DE PESO ( kg )" />
+      <InfoBox mainText={jsonData?.participant.bodyFatPercentage.desired.toString() || '0'} subText="META DE PORCENTAGEM DE GORDURA" />
+      <InfoBox mainText={extraDays.toString()} subText="DIAS EXTRAS / DIAS A MAIS" />
+    </div>
+    }
+    </div>
       {jsonData && jsonData.frequency['2024'].map((month, monthIndex) => (
         <TableContainer component={Paper} key={month.monthName} className="table-cont-container">
-          <Table sx={{ minWidth: 1000 }} aria-label="customized table">
+          <Table aria-label="customized table" className="inside-table">
             <TableHead>
               <TableRow>
-                <StyledTableCell colSpan={7} align="center">
+                <StyledTableCell className="table-row" colSpan={7} align="center">
                   {month.monthName}
                 </StyledTableCell>
               </TableRow>
               <TableRow>
-                <StyledTableCell colSpan={1} align="center">
-                    Domingo
+                <StyledTableCell className="table-row" colSpan={1} align="center">
+                    Dom
                 </StyledTableCell>
-                <StyledTableCell colSpan={1} align="center">
-                    Segunda-feira
+                <StyledTableCell className="table-row" colSpan={1} align="center">
+                    Seg
                 </StyledTableCell>
-                <StyledTableCell colSpan={1} align="center">
-                    Terça-feira
+                <StyledTableCell className="table-row" colSpan={1} align="center">
+                    Ter
                 </StyledTableCell>
-                <StyledTableCell colSpan={1} align="center">
-                    Quarta-feira
+                <StyledTableCell className="table-row" colSpan={1} align="center">
+                    Qua
                 </StyledTableCell>
-                <StyledTableCell colSpan={1} align="center">
-                    Quinta-feira
+                <StyledTableCell className="table-row" colSpan={1} align="center">
+                    Qui
                 </StyledTableCell>
-                <StyledTableCell colSpan={1} align="center">
-                    Sexta-feira
+                <StyledTableCell className="table-row" colSpan={1} align="center">
+                    Sex
                 </StyledTableCell>
-                <StyledTableCell colSpan={1} align="center">
-                    Sabado
+                <StyledTableCell className="table-row" colSpan={1} align="center">
+                    Sab
                 </StyledTableCell>
               </TableRow>
             </TableHead>

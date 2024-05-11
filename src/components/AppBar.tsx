@@ -8,7 +8,7 @@ import SideDrawer from "./SideBar";
 import { useState } from "react";
 import { IconButton } from "@mui/material";
 
-export default function DenseAppBar({ setName, name } : { setName: (string: string) => void, name: string }) {
+export default function DenseAppBar({ setName, email } : { setName: (string: string) => void, email: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -18,10 +18,9 @@ export default function DenseAppBar({ setName, name } : { setName: (string: stri
   return (
     <Box sx={{ flexGrow: 1 }}>
       <SideDrawer toggleDrawer={toggleDrawer} isOpen={isOpen} setName={setName} />
-      <AppBar position="static" sx={{ backgroundColor: grey[900] }}>
+      <AppBar position="static" sx={{ backgroundColor: grey[50], boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px' }}>
         <Toolbar variant="dense">
           <IconButton
-            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={toggleDrawer}
@@ -29,8 +28,8 @@ export default function DenseAppBar({ setName, name } : { setName: (string: stri
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" color="inherit" component="div">
-            Aposta Academia - Participante : {name}
+          <Typography variant="h6" color="black" component="div">
+            Aposta Academia - Participante : {email}
           </Typography>
         </Toolbar>
       </AppBar>

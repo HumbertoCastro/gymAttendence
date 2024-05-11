@@ -7,7 +7,19 @@ interface Props {
   data: GymAttendanceData; // The full attendance JSON data
 }
 
+
 export default function AttendanceChart({ data }: Props) {
+    const colorMap = {
+      type: 'piecewise', // Define a piecewise color map
+      ranges: [{
+        upTo: data.participant.attendanceDaysPerWeek, // Threshold
+        color: 'red', // Color for values below the threshold
+      }, {
+        from: data.participant.attendanceDaysPerWeek,
+        color: 'green', // Color for values above the threshold
+      }]
+    };
+  
     const [sizes, setSizes] = useState({
         witdh: 0,
         heigth: 0,
@@ -37,12 +49,28 @@ export default function AttendanceChart({ data }: Props) {
         }
     }, [])
 
+
+    useEffect(() => {
+      // Wait for the chart to render
+      setTimeout(() => {
+          const bars = document.querySelectorAll('.MuiBarElement-series-yAxis1');
+          bars.forEach((bar, index) => {
+              const value = values[index];
+              if (value < data.participant.attendanceDaysPerWeek) {
+                  bar.style.fill = 'red'; // Change color to red if value is less than threshold
+              } else {
+                  bar.style.fill = 'rgb(104, 255, 84)'; // Default color
+              }
+          });
+      }, 1000); // Adjust timeout as needed to ensure it runs after chart render
+  }, [values]);
+
   return (
     <>
     <BarChart
       sx={
         {
-            backgroundColor: 'rgba(224, 224, 224, 1)',
+            backgroundColor: 'white',
             borderRadius: '6px'
         }
       }
@@ -59,6 +87,7 @@ export default function AttendanceChart({ data }: Props) {
         scaleType: 'linear',
       }]}
       series={[{
+        id: 'yAxis1',
         data: values,
       }]}
       width={sizes.witdh}

@@ -11,6 +11,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { GymAttendanceData } from './Jsons/Frequency';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCV0iq454qWhIbfx5OFQmcoqb7za9qNY_0",
@@ -27,9 +28,59 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Configurar os serviços do Firebase que você deseja usar
+const auth = getAuth(app);
+
+const logInWithEmailAndPassword = async (email: string, password: string) => {
+  try {
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    return res.user;
+  } catch (err: any) {
+    throw Error(err);
+  }
+};
+
+const addCompensatedDaysToAllJsons = async () => {
+  const gamesRef = collection(db, "jsons");
+  const q = query(gamesRef);
+  try {
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      console.log('No documents found in the collection.');
+      return 'No documents';
+    }
+
+    const updates = querySnapshot.docs.map(async (doc) => {
+      const data = doc.data() as GymAttendanceData;
+      // Modify the frequency to add 'compensatedDays' to each 'DateAttendance'
+      Object.keys(data.frequency).forEach(year => {
+        data.frequency[year].forEach(month => {
+          Object.keys(month.weaks).forEach(week => {
+            const dateAttendance = month.weaks[week];
+            if (!dateAttendance.compesatedDays) {
+              dateAttendance.compesatedDays = []; // Initialize with an empty array if not present
+            }
+          });
+        });
+      });
+
+      // Update the document with the modified data
+      await setDoc(doc.ref, data);
+    });
+
+    // Wait for all updates to complete
+    await Promise.all(updates);
+    return 'All documents updated successfully';
+  } catch (err: any) {
+    console.error("Failed to update documents:", err);
+    throw new Error(err.message);
+  }
+};
+
+
 const updateJson = async (user: string, json: GymAttendanceData) => {
   const gamesRef = collection(db, "jsons");
-  const q = query(gamesRef, where('name', '==', user));
+  const q = query(gamesRef, where('email', '==', user));
   try {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
@@ -52,7 +103,7 @@ const updateJson = async (user: string, json: GymAttendanceData) => {
 const getJson = async (user: string) => {
   console.log(user)
   const usersRef = collection(db, "jsons");
-  const q = query(usersRef, where('name', '==', user));
+  const q = query(usersRef, where('email', '==', user));
 
   try {
     const querySnapshot = await getDocs(q);
@@ -98,5 +149,7 @@ const getAllJsons = async () => {
 export {
   getJson,
   updateJson,
-  getAllJsons
+  getAllJsons,
+  logInWithEmailAndPassword,
+  addCompensatedDaysToAllJsons
 };

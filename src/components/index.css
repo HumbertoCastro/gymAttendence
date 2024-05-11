@@ -1,3 +1,11 @@
 .left-bar{
     width: 15vw;
 }
+
+@media (max-width: 850px) {
+    
+    .left-bar {
+        width: 70vw;
+    }
+}
+  
