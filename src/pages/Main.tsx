@@ -100,7 +100,7 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
               <StyledTableCell className="table-row" key={date} align="center">
                 {date.split("-")[2]}
                 <Checkbox
-                  // disabled={ logged !== currentUser }
+                  disabled={ logged !== currentUser }
                   checked={weekData.attended.includes(date)}
                   onChange={() => handleCheck(date, weekKey, monthIndex)}
                 />
