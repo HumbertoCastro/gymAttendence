@@ -9,6 +9,7 @@ export default function GeneralInfo() {
     const widthScream = window.innerWidth
     const heighScream = window.innerHeight
     const [chartData, setChartData] = useState<any>({ labels: [], values: [] });
+    const [allDays, setAllDays] = useState<any>({ values: [] })
 
     const getjsons = async () => {
         const jsonData: any = await getAllJsons();
@@ -21,9 +22,11 @@ export default function GeneralInfo() {
 
     useEffect(() => {
         if (data) {
+            const persons: number[] = [];
             const labels = data.map(item => item.name);
             const values = data.map(item => {
                 let count = 0;
+                let personCount = 0;
                 Object.values(item.frequency).forEach(month => {
                     console.log(month, item.name)
                     month.forEach(m => {
@@ -31,11 +34,14 @@ export default function GeneralInfo() {
                             if (week.attended.length >= item.participant.attendanceDaysPerWeek) {
                                 count++;
                             }
+                            personCount += week.attended.length
                         });
                     });
                 });
+                persons.push(personCount)
                 return count;
             });
+            setAllDays({ values: persons})
             setChartData({ labels, values });
         }
     }, [data]);
@@ -65,6 +71,34 @@ export default function GeneralInfo() {
                 }]}
                 series={[{
                     data: chartData.values,
+                }]}
+                width={widthScream * 0.95}
+                height={heighScream * 0.6}
+            />
+        )}
+        <h1>Frequência Geral em numero de DIAS</h1>
+        <p>Quantos dias cada um foi a academia</p>
+        {chartData.labels.length > 0 && (
+            <BarChart
+                sx={
+                {
+                    backgroundColor: 'white',
+                    borderRadius: '6px'
+                }
+                }
+                xAxis={[{
+                    id: 'barCategories',
+                    data: chartData.labels,
+                    scaleType: 'band'
+                }]}
+                yAxis={[{
+                    id: 'yAxis1',
+                    position: 'left',
+                    scaleType: 'linear',
+                    max: 54
+                }]}
+                series={[{
+                    data: allDays.values,
                 }]}
                 width={widthScream * 0.95}
                 height={heighScream * 0.6}
