@@ -17,6 +17,7 @@ import './Main.css'
 import { sortWeeks } from "../utils/sortWeaks";
 import AttendanceChart from "../components/Graficos";
 import InfoBox from "../components/InfoBox";
+import backup from "../Jsons/Humberto.json"
 
 // Styled components
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
