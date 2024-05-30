@@ -10,14 +10,13 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 
-import { addExtraDayUsed, getJson, updateJson } from "../firebase-config";
+import { getJson, updateJson } from "../firebase-config";
 import { DateAttendance, GymAttendanceData, Month } from "../Jsons/Frequency";
 import './Main.css'
 import { sortWeeks } from "../utils/sortWeaks";
 import AttendanceChart from "../components/Graficos";
 import InfoBox from "../components/InfoBox";
-import { Button } from "@mui/material";
-import { Check, CheckBox, CheckBoxOutlineBlank, CheckBoxOutlined } from "@mui/icons-material";
+import { CheckBox, CheckBoxOutlined } from "@mui/icons-material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -67,7 +66,7 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
     } else {
       weekData.attended.push(date);
     }
-    if (extraDaysEnabled) {
+    if (extraDaysEnabled || jsonData?.extraDaysUsed?.includes(date)) {
       if (updatedJsonData["extraDaysUsed"].includes(date)) updatedJsonData["extraDaysUsed"].splice(updatedJsonData["extraDaysUsed"].indexOf(date), 1);
       else if (updatedJsonData["extraDaysUsed"]) updatedJsonData["extraDaysUsed"].push(date);
       else updatedJsonData["extraDaysUsed"] = [date];
@@ -125,7 +124,7 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
               {date.split("-")[2]}
               <Checkbox
                 checkedIcon={jsonData?.extraDaysUsed?.includes(date) ? <CheckBox color="secondary" /> : <CheckBoxOutlined />}
-                disabled={extraDaysEnabled == true ? false : logged !== currentUser || isDateOlderThanNineDays(date) || isDateMoreThanThreeDaysInFuture(date)}
+                disabled={jsonData?.extraDaysUsed?.includes(date) ? false : extraDaysEnabled == true ? false : logged !== currentUser || isDateOlderThanNineDays(date) || isDateMoreThanThreeDaysInFuture(date)}
                 checked={weekData.attended.includes(date)}
                 onChange={() => handleCheck(date, weekKey, monthIndex)}
               />
