@@ -146,10 +146,42 @@ const getAllJsons = async () => {
   }
 }
 
+const addExtraDayUsed = async (email: string, extraDay: string) => {
+  const usersRef = collection(db, "jsons");
+  const q = query(usersRef, where('email', '==', email));
+  
+  try {
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      console.log('No matching documents.');
+      return 'No matching document'; // or handle this case differently
+    }
+
+    // Assuming there's only one document per user
+    const doc = querySnapshot.docs[0];
+    const data = doc.data() as GymAttendanceData;
+
+    // Check if the extraDaysUsed key exists and update accordingly
+    if (!data.extraDaysUsed) {
+      data.extraDaysUsed = [extraDay];
+    } else {
+      data.extraDaysUsed.push(extraDay);
+    }
+
+    // Update the document with the modified data
+    await setDoc(doc.ref, data);
+    return 'Success';
+  } catch (err: any) {
+    console.error("Failed to update JSON with extraDaysUsed:", err);
+    throw new Error(err.message);
+  }
+}
+
 export {
   getJson,
   updateJson,
   getAllJsons,
   logInWithEmailAndPassword,
-  addCompensatedDaysToAllJsons
+  addCompensatedDaysToAllJsons,
+  addExtraDayUsed
 };

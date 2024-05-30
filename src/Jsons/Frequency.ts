@@ -24,6 +24,7 @@ export interface DateAttendance {
   
   export interface GymAttendanceData {
     name: string;
+    extraDaysUsed: string[];
     participant: Participant;
     frequency: { [year: string]: Month[] };
   }
