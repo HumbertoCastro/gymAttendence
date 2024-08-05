@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { logInWithEmailAndPassword } from "../../firebase-config";
 import "./Login.css";
 
@@ -12,21 +12,46 @@ const Login: React.FC<loginInterface> = ({ callbackEmail, setLogged }) => {
   const [senha, setSenha] = useState<string>("");
   const [mensagem, setMensagem] = useState<string>("");
 
+  const preverify = async () => {
+    if (localStorage.getItem("email") && localStorage.getItem("senha")) {
+      const senhaStorage = localStorage.getItem("senha");
+      const emailStorage = localStorage.getItem("email");
+      try {
+        if (senhaStorage && emailStorage) {
+          const res = await logInWithEmailAndPassword(
+            emailStorage,
+            senhaStorage
+          );
+          if (res.email) {
+            callbackEmail(res.email);
+            setLogged(res.email);
+            return;
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  useEffect(() => {
+    preverify();
+  });
+
   const verificarEmailSenha = async (event: FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (email.length < 8) {
       setMensagem("O email deve ter no mínimo 8 caracteres.");
     } else if (senha.length < 6) {
       setMensagem("A senha deve ter no mínimo 6 caracteres.");
-    } else if (!/[A-Z]/.test(senha)) {
-      setMensagem("A senha deve conter pelo menos uma letra maiúscula.");
     } else {
       try {
         const res = await logInWithEmailAndPassword(email, senha);
-        console.log(res)
         if (res.email) {
-          callbackEmail(res.email)
-          setLogged(res.email)
+          callbackEmail(res.email);
+          setLogged(res.email);
+          localStorage.setItem("email", email);
+          localStorage.setItem("senha", senha);
         } else {
           setMensagem("E-mail ou senha podem estar errados");
         }
@@ -61,7 +86,7 @@ const Login: React.FC<loginInterface> = ({ callbackEmail, setLogged }) => {
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </button>
       </div>
-      <p style={{ color: 'white' }} >{mensagem}</p>
+      <p style={{ color: "white" }}>{mensagem}</p>
     </form>
   );
 };

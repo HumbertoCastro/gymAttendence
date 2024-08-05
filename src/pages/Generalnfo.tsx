@@ -101,7 +101,7 @@ export default function GeneralInfo() {
                         id: 'yAxis1',
                         position: 'left',
                         scaleType: 'linear',
-                        max: 54
+                        max: allDays.values[0] * 1.3
                     }]}
                     series={[{
                         data: allDays.values,
