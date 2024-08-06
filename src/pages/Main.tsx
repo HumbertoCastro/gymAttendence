@@ -31,6 +31,7 @@ const imagePaths = [
   "src/assets/pessoas/eu.png",
   "src/assets/pessoas/mada.png",
   "src/assets/pessoas/math.png",
+  "src/assets/pessoas/diga.png",
 ]
 
 const getRandomImage = () => {
