@@ -9,14 +9,34 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
+import "react-toastify/dist/ReactToastify.css";
 
 import { getJson, updateJson } from "../firebase-config";
 import { DateAttendance, GymAttendanceData, Month } from "../Jsons/Frequency";
-import './Main.css'
+import "./Main.css";
 import { sortWeeks } from "../utils/sortWeaks";
 import AttendanceChart from "../components/Graficos";
 import InfoBox from "../components/InfoBox";
 import { CheckBox, CheckBoxOutlined } from "@mui/icons-material";
+import { ToastContainer, toast } from "react-toastify";
+import CustomToast from "../components/CustomToast";
+
+const imagePaths = [
+  "src/assets/pessoas/celo.png",
+  "src/assets/pessoas/gabs.png",
+  "src/assets/pessoas/nata.png",
+  "src/assets/pessoas/joao.png",
+  "src/assets/pessoas/bela.png",
+  "src/assets/pessoas/isa.png",
+  "src/assets/pessoas/eu.png",
+  "src/assets/pessoas/mada.png",
+  "src/assets/pessoas/math.png",
+]
+
+const getRandomImage = () => {
+  const randomIndex = Math.floor(Math.random() * imagePaths.length);
+  return imagePaths[randomIndex];
+};
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -55,7 +75,18 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
     getJsonData();
   }, [currentUser]);
 
-  const handleCheck = async (date: string, weekKey: string, monthIndex: number) => {
+  const handleCheck = async (
+    date: string,
+    weekKey: string,
+    monthIndex: number,
+    checked: boolean
+  ) => {
+    if (checked) {
+      const imageSrc = getRandomImage();    
+      toast(<CustomToast imageSrc={imageSrc} />);
+    } else {
+    }
+    /*
     if (!jsonData) return;
     const updatedJsonData = { ...jsonData };
     const weekData = updatedJsonData.frequency['2024'][monthIndex].weaks[weekKey];
@@ -79,22 +110,32 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
       console.log('Update successful');
     } catch (error) {
       console.error('Failed to update:', error);
-    }
+    }*/
   };
 
   useEffect(() => {
     let count = 0;
-    jsonData?.frequency['2024'].forEach((month) => {
+    jsonData?.frequency["2024"].forEach((month) => {
       Object.values(month.weaks).forEach((weekData) => {
-        const extraDaysInWeek = weekData.attended.filter(date => jsonData.extraDaysUsed?.includes(date)).length;
-        if (weekData.attended.length - extraDaysInWeek > jsonData.participant.attendanceDaysPerWeek) {
+        const extraDaysInWeek = weekData.attended.filter((date) =>
+          jsonData.extraDaysUsed?.includes(date)
+        ).length;
+        if (
+          weekData.attended.length - extraDaysInWeek >
+          jsonData.participant.attendanceDaysPerWeek
+        ) {
           count++;
         }
       });
     });
-    if (count - (jsonData?.extraDaysUsed?.length || 0) === 0) setExtraEnabled(false);
-    setExtra((count - (jsonData?.extraDaysUsed?.length || 0)) <= 0 ? 0 : count - (jsonData?.extraDaysUsed?.length || 0));
-  }, [jsonData]);  
+    if (count - (jsonData?.extraDaysUsed?.length || 0) === 0)
+      setExtraEnabled(false);
+    setExtra(
+      count - (jsonData?.extraDaysUsed?.length || 0) <= 0
+        ? 0
+        : count - (jsonData?.extraDaysUsed?.length || 0)
+    );
+  }, [jsonData]);
 
   const isDateOlderThanNineDays = (date: string): boolean => {
     const currentDate = new Date();
@@ -113,66 +154,180 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
   };
 
   const renderTableForMonth = (monthData: Month, monthIndex: number) => {
-    return Object.entries(sortWeeks(monthData.weaks)).map(([weekKey, weekData]: [string, DateAttendance]) => {
-      return (
-        <StyledTableRow
-          key={weekKey}
-          className={jsonData && weekData.attended.length >= jsonData?.participant.attendanceDaysPerWeek ? 'complete-week' : ''}
-        >
-          {weekData.dates.map((date: string) => (
-            <StyledTableCell className="table-row" key={date} align="center">
-              {date.split("-")[2]}
-              <Checkbox
-                checkedIcon={jsonData?.extraDaysUsed?.includes(date) ? <CheckBox color="secondary" /> : <CheckBoxOutlined />}
-                disabled={jsonData?.extraDaysUsed?.includes(date) ? false : extraDaysEnabled == true ? false : logged !== currentUser || isDateOlderThanNineDays(date) || isDateMoreThanThreeDaysInFuture(date)}
-                checked={weekData.attended.includes(date)}
-                onChange={() => handleCheck(date, weekKey, monthIndex)}
-              />
-            </StyledTableCell>
-          ))}
-        </StyledTableRow>
-      );
-    });
+    return Object.entries(sortWeeks(monthData.weaks)).map(
+      ([weekKey, weekData]: [string, DateAttendance]) => {
+        return (
+          <StyledTableRow
+            key={weekKey}
+            className={
+              jsonData &&
+              weekData.attended.length >=
+                jsonData?.participant.attendanceDaysPerWeek
+                ? "complete-week"
+                : ""
+            }
+          >
+            {weekData.dates.map((date: string) => (
+              <StyledTableCell className="table-row" key={date} align="center">
+                {date.split("-")[2]}
+                <Checkbox
+                  checkedIcon={
+                    jsonData?.extraDaysUsed?.includes(date) ? (
+                      <CheckBox color="secondary" />
+                    ) : (
+                      <CheckBoxOutlined />
+                    )
+                  }
+                  disabled={
+                    jsonData?.extraDaysUsed?.includes(date)
+                      ? false
+                      : extraDaysEnabled == true
+                      ? false
+                      : logged !== currentUser ||
+                        isDateOlderThanNineDays(date) ||
+                        isDateMoreThanThreeDaysInFuture(date)
+                  }
+                  checked={weekData.attended.includes(date)}
+                  onChange={({ target: { checked } }) =>
+                    handleCheck(date, weekKey, monthIndex, checked)
+                  }
+                />
+              </StyledTableCell>
+            ))}
+          </StyledTableRow>
+        );
+      }
+    );
   };
 
   const useDiasExtras = () => {
     setExtraEnabled(!extraDaysEnabled);
-  }
+  };
 
   return (
     <div className="table-cont">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="">
         {jsonData && <AttendanceChart data={jsonData} />}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between" }}>
-          <InfoBox mainText={jsonData?.participant.attendanceDaysPerWeek.toString() || '0'} subText="META SEMANAL" />
-          <InfoBox mainText={`${jsonData?.participant.weight.desired}`} subText="META DE PESO ( kg )" />
-          <InfoBox mainText={jsonData?.participant.bodyFatPercentage.desired.toString() || '0'} subText="META DE PORCENTAGEM DE GORDURA" />
-          <InfoBox mainText={extraDays.toString()} subText="DIAS EXTRAS / DIAS A MAIS" callback={extraDays > 0 && logged === currentUser ? useDiasExtras : undefined} extraDaysEnabled={extraDaysEnabled} />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <InfoBox
+            mainText={
+              jsonData?.participant.attendanceDaysPerWeek.toString() || "0"
+            }
+            subText="META SEMANAL"
+          />
+          <InfoBox
+            mainText={`${jsonData?.participant.weight.desired}`}
+            subText="META DE PESO ( kg )"
+          />
+          <InfoBox
+            mainText={
+              jsonData?.participant.bodyFatPercentage.desired.toString() || "0"
+            }
+            subText="META DE PORCENTAGEM DE GORDURA"
+          />
+          <InfoBox
+            mainText={extraDays.toString()}
+            subText="DIAS EXTRAS / DIAS A MAIS"
+            callback={
+              extraDays > 0 && logged === currentUser
+                ? useDiasExtras
+                : undefined
+            }
+            extraDaysEnabled={extraDaysEnabled}
+          />
         </div>
       </div>
-      {jsonData && jsonData.frequency['2024'].map((month, monthIndex) => (
-        <TableContainer component={Paper} key={month.monthName} className="table-cont-container">
-          <Table aria-label="customized table" className="inside-table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell className="table-row" colSpan={7} align="center">
-                  {month.monthName}
-                </StyledTableCell>
-              </TableRow>
-              <TableRow>
-                <StyledTableCell className="table-row" colSpan={1} align="center">Dom</StyledTableCell>
-                <StyledTableCell className="table-row" colSpan={1} align="center">Seg</StyledTableCell>
-                <StyledTableCell className="table-row" colSpan={1} align="center">Ter</StyledTableCell>
-                <StyledTableCell className="table-row" colSpan={1} align="center">Qua</StyledTableCell>
-                <StyledTableCell className="table-row" colSpan={1} align="center">Qui</StyledTableCell>
-                <StyledTableCell className="table-row" colSpan={1} align="center">Sex</StyledTableCell>
-                <StyledTableCell className="table-row" colSpan={1} align="center">Sab</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>{renderTableForMonth(month, monthIndex)}</TableBody>
-          </Table>
-        </TableContainer>
-      ))}
+      {jsonData &&
+        jsonData.frequency["2024"].map((month, monthIndex) => (
+          <TableContainer
+            component={Paper}
+            key={month.monthName}
+            className="table-cont-container"
+          >
+            <Table aria-label="customized table" className="inside-table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={7}
+                    align="center"
+                  >
+                    {month.monthName}
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={1}
+                    align="center"
+                  >
+                    Dom
+                  </StyledTableCell>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={1}
+                    align="center"
+                  >
+                    Seg
+                  </StyledTableCell>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={1}
+                    align="center"
+                  >
+                    Ter
+                  </StyledTableCell>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={1}
+                    align="center"
+                  >
+                    Qua
+                  </StyledTableCell>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={1}
+                    align="center"
+                  >
+                    Qui
+                  </StyledTableCell>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={1}
+                    align="center"
+                  >
+                    Sex
+                  </StyledTableCell>
+                  <StyledTableCell
+                    className="table-row"
+                    colSpan={1}
+                    align="center"
+                  >
+                    Sab
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{renderTableForMonth(month, monthIndex)}</TableBody>
+            </Table>
+          </TableContainer>
+        ))}
     </div>
   );
 };
