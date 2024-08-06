@@ -29,7 +29,7 @@ export default function DenseAppBar({ setName, email } : { setName: (string: str
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="black" component="div">
-            Aposta Academia - Participante : {email} - Versão 1.0.5
+            Aposta Academia - Participante : {email} - Versão 1.0.6
           </Typography>
         </Toolbar>
       </AppBar>
