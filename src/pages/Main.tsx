@@ -85,9 +85,7 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
     if (checked) {
       const imageSrc = getRandomImage();    
       toast(<CustomToast imageSrc={imageSrc} />);
-    } else {
     }
-    /*
     if (!jsonData) return;
     const updatedJsonData = { ...jsonData };
     const weekData = updatedJsonData.frequency['2024'][monthIndex].weaks[weekKey];
@@ -111,7 +109,7 @@ const MainPage: React.FC<MainPageProps> = ({ currentUser, logged }) => {
       console.log('Update successful');
     } catch (error) {
       console.error('Failed to update:', error);
-    }*/
+    }
   };
 
   useEffect(() => {
