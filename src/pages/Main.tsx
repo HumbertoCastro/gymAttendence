@@ -22,16 +22,16 @@ import { ToastContainer, toast } from "react-toastify";
 import CustomToast from "../components/CustomToast";
 
 const imagePaths = [
-  "/assets/pessoas/celo.png",
-  "/assets/pessoas/gabs.png",
-  "/assets/pessoas/nata.png",
-  "/assets/pessoas/joao.png",
-  "/assets/pessoas/bela.png",
-  "/assets/pessoas/isa.png",
-  "/assets/pessoas/eu.png",
-  "/assets/pessoas/mada.png",
-  "/assets/pessoas/math.png",
-  "/assets/pessoas/diga.png",
+  "assets/pessoas/celo.png",
+  "assets/pessoas/gabs.png",
+  "assets/pessoas/nata.png",
+  "assets/pessoas/joao.png",
+  "assets/pessoas/bela.png",
+  "assets/pessoas/isa.png",
+  "assets/pessoas/eu.png",
+  "assets/pessoas/mada.png",
+  "assets/pessoas/math.png",
+  "assets/pessoas/diga.png",
 ]
 
 const getRandomImage = () => {
